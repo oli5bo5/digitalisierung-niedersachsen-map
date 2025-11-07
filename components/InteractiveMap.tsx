@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-imporimport { useState, Suspense, useEffect } from 'react';
+import  { useState, Suspense, useEffect } from 'react';
 import { useStakeholders } from '@/hooks/useStakeholders';
 import { supabase } from '@/lib/supabase';
 
