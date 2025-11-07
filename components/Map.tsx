@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Map, { Marker, Popup, NavigationControl } from 'react-map-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || 'pk.eyJ1IjoibXBvbGlzYm9zIiwiYSI6ImNtaG9uN2sycjA2Z2syb3NlbTI2eHhtcDMifQ.qMZ0pxhhl-Xpb-qQHGgvng';
 interface Stakeholder {
