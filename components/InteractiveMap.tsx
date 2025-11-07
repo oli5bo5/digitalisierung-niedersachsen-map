@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Map, { Marker, Popup, NavigationControl } from 'react-map-gl';
 import { useStakeholders } from '@/hooks/useStakeholders';
 import { supabase } from '@/lib/supabase';
@@ -20,7 +20,7 @@ interface Stakeholder {
 
 export default function InteractiveMap() {
   const { stakeholders, loading: loadingStakeholders } = useStakeholders();
-  const [selectedMarker, setSelectedMarker] = useState<Stakeholder | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [viewState, setViewState] = useState({
     longitude: 9.5,
     latitude: 52.5,
@@ -52,6 +52,8 @@ export default function InteractiveMap() {
     { value: 'other', label: 'Sonstiges' }
   ];
 
+  const selectedMarker = stakeholders.find(s => s.id === selectedId);
+
   const handleRegionChange = (regionId: string) => {
     const region = regions.find(r => r.id === regionId);
     if (region) {
@@ -69,19 +71,16 @@ export default function InteractiveMap() {
     setSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from('stakeholders')
-        .insert([{
-          name: formData.name,
-          type: formData.type,
-          region: formData.region,
-          latitude: formData.latitude,
-          longitude: formData.longitude,
-          description: formData.description
-        }]);
+      const { error } = await supabase.from('stakeholders').insert([{
+        name: formData.name,
+        type: formData.type,
+        region: formData.region,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        description: formData.description
+      }]);
 
       if (error) throw error;
-
       setShowForm(false);
       setFormData({
         name: '',
@@ -92,9 +91,9 @@ export default function InteractiveMap() {
         description: ''
       });
       window.location.reload();
-    } catch (error) {
-      console.error('Fehler:', error);
-      alert('Fehler beim Hinzufügen');
+    } catch (err) {
+      console.error(err);
+      alert('Fehler');
     } finally {
       setSubmitting(false);
     }
@@ -102,7 +101,7 @@ export default function InteractiveMap() {
 
   return (
     <div className="w-full h-screen flex flex-col">
-      <div className="bg-indigo-600 text-white p-4 z-10">
+      <div className="bg-indigo-600 text-white p-4">
         <h1 className="text-2xl font-bold">Digitalisierungsakteure Niedersachsen</h1>
         <p className="text-sm mt-1">Akteure ({stakeholders.length})</p>
       </div>
@@ -129,20 +128,14 @@ export default function InteractiveMap() {
               ))}
               {stakeholders.map((s) => (
                 <Marker key={s.id} longitude={s.longitude} latitude={s.latitude}>
-                  <button
-                    onClick={() => setSelectedMarker(s)}
-                    className="text-xl bg-white rounded-full p-1 shadow hover:shadow-lg transition"
-                    title={s.name}
-                  >
-                    •
-                  </button>
+                  <div className="text-lg">•</div>
                 </Marker>
               ))}
               {selectedMarker && (
                 <Popup
                   longitude={selectedMarker.longitude}
                   latitude={selectedMarker.latitude}
-                  onClose={() => setSelectedMarker(null)}
+                  onClose={() => setSelectedId(null)}
                   closeButton
                 >
                   <div className="p-2">
@@ -206,13 +199,13 @@ export default function InteractiveMap() {
             {loadingStakeholders ? (
               <p className="text-gray-500 text-sm">Wird geladen...</p>
             ) : stakeholders.length === 0 ? (
-              <p className="text-gray-500 text-sm">Keine Akteure vorhanden</p>
+              <p className="text-gray-500 text-sm">Keine Akteure</p>
             ) : (
               <div className="space-y-2">
                 {stakeholders.map((s) => (
                   <button
                     key={s.id}
-                    onClick={() => setSelectedMarker(s)}
+                    onClick={() => setSelectedId(s.id)}
                     className="w-full text-left p-3 bg-gray-50 hover:bg-indigo-50 rounded border hover:border-indigo-300 transition"
                   >
                     <div className="font-semibold text-sm">{s.name}</div>
