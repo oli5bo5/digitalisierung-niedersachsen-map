@@ -18,8 +18,14 @@ export function useStakeholders(regionId?: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    const fetchStakeholders = async () => {
+latitude: item.location
+longitude: item.location
+      ? (typeof item.location === "string"
+         ? JSON.parse(item.location).coordinates[0]
+         : item.location.coordinates[0])
+      : null,         ? JSON.parse(item.location).coordinates[1]
+         : item.location.coordinates[1])
+      : null,    const fetchStakeholders = async () => {
       try {
         setLoading(true);
         let query = supabase
