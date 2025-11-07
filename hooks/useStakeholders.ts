@@ -24,8 +24,7 @@ export function useStakeholders(regionId?: string) {
         setLoading(true);
         let query = supabase
           .from('stakeholders')
-          .select('*');
-
+        .select('*, location')
         if (regionId) {
           query = query.eq('region', regionId);
         }
@@ -38,9 +37,7 @@ export function useStakeholders(regionId?: string) {
         const mappedData = (data || []).map((item: any) => ({
           id: item.id,
           name: item.name,
-          latitude: item.latitude,
-          longitude: item.longitude,
-          type: item.type,
+        latitude: item.location ? JSON.parse(item.location as string).coordinates[1] : 0,                  longitude: item.location ? JSON.parse(item.location as string).coordinates[0] : 0,        type: item.type,
           region: item.region,
           description: item.description
         }));
