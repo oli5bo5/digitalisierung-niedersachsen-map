@@ -1,8 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import { useState, Suspense } from 'react';
 import { useStakeholders } from '@/hooks/useStakeholders';
 import { supabase } from '@/lib/supabase';
+
+const MapComponent = dynamic(() => import('./Map'), {
+  loading: () => (
+    <div className="flex-1 rounded-lg shadow-lg overflow-hidden bg-white flex items-center justify-center">
+      <div className="text-center">
+        <p className="text-gray-400 font-semibold">Karte wird geladen...</p>
+        <p className="text-gray-300 text-sm mt-2">Bitte warten Sie</p>
+      </div>
+    </div>
+  ),
+  ssr: false
+});
 
 export default function InteractiveMap() {
   const { stakeholders = [], loading: loadingStakeholders } = useStakeholders();
@@ -84,12 +97,9 @@ export default function InteractiveMap() {
       </div>
 
       <div className="flex-1 flex gap-4 p-4 overflow-hidden">
-        <div className="flex-1 rounded-lg shadow-lg overflow-hidden bg-white flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-gray-400 font-semibold">Karte wird geladen...</p>
-            <p className="text-gray-300 text-sm mt-2">Bitte warten Sie</p>
-          </div>
-        </div>
+        <Suspense fallback={<div className="flex-1 bg-gray-100" />}>
+          <MapComponent stakeholders={stakeholders} selectedId={selectedId} setSelectedId={setSelectedId} />
+        </Suspense>
 
         <div className="w-80 bg-white rounded-lg shadow-lg flex flex-col overflow-hidden border border-gray-200">
           <button
@@ -156,7 +166,11 @@ export default function InteractiveMap() {
                   <button
                     key={s.id}
                     onClick={() => setSelectedId(s.id)}
-                    className="w-full text-left p-3 bg-gray-50 hover:bg-indigo-50 rounded border hover:border-indigo-300 transition"
+                    className={`w-full text-left p-3 rounded border transition ${
+                      selectedId === s.id
+                        ? 'bg-indigo-100 border-indigo-300'
+                        : 'bg-gray-50 hover:bg-indigo-50 border-gray-300 hover:border-indigo-300'
+                    }`}
                     type="button"
                   >
                     <div className="font-semibold text-sm">{s.name}</div>
