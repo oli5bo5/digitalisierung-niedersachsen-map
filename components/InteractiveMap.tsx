@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import Map, { Marker, Popup, NavigationControl } from 'react-map-gl';
 import { useStakeholders } from '@/hooks/useStakeholders';
@@ -207,7 +206,7 @@ export default function InteractiveMap() {
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   className="w-full px-3 py-2 border border-indigo-300 rounded text-sm"
-                  rows={2}
+                  rows={2 as any}
                 />
               </div>
               <button
@@ -270,7 +269,6 @@ export default function InteractiveMap() {
                 key={region.id}
                 longitude={region.lng}
                 latitude={region.lat}
-                color="#4F46E5"
               >
                 <div
                   className="cursor-pointer font-bold text-white bg-indigo-600 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-indigo-700 text-sm"
@@ -287,9 +285,9 @@ export default function InteractiveMap() {
                 key={s.id}
                 longitude={s.longitude}
                 latitude={s.latitude}
-                onClick={() => setSelectedMarker(s)}
               >
                 <div
+                  onClick={() => setSelectedMarker(s)}
                   className="cursor-pointer w-6 h-6 bg-green-500 border-2 border-white rounded-full shadow-lg hover:scale-125 transition"
                   title={s.name}
                 />
