@@ -1,7 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase, Stakeholder } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
+
+export interface Stakeholder {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  type: string;
+  region: string;
+  description?: string;
+}
 
 export function useStakeholders(regionId?: string) {
   const [stakeholders, setStakeholders] = useState<Stakeholder[]>([]);
@@ -12,18 +22,33 @@ export function useStakeholders(regionId?: string) {
     const fetchStakeholders = async () => {
       try {
         setLoading(true);
-        let query = supabase.from('stakeholders').select('*');
+        let query = supabase
+          .from('stakeholders')
+          .select('*');
 
         if (regionId) {
-          query = query.eq('region_id', regionId);
+          query = query.eq('region', regionId);
         }
 
         const { data, error } = await query;
 
         if (error) throw error;
-        setStakeholders(data || []);
+
+        // Map database fields to component interface
+        const mappedData = (data || []).map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          type: item.type,
+          region: item.region,
+          description: item.description
+        }));
+
+        setStakeholders(mappedData);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Unknown error'));
+        console.error('Error fetching stakeholders:', err);
       } finally {
         setLoading(false);
       }
@@ -44,12 +69,15 @@ export function useRegions() {
     const fetchRegions = async () => {
       try {
         setLoading(true);
-        const { data, error } = await supabase.from('regions').select('*');
+        const { data, error } = await supabase
+          .from('regions')
+          .select('*');
 
         if (error) throw error;
         setRegions(data || []);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Unknown error'));
+        console.error('Error fetching regions:', err);
       } finally {
         setLoading(false);
       }
