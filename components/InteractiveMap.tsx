@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import  { useState, Suspense, useEffect } from 'react';
+import { useState, Suspense } from 'react';
 import { useStakeholders } from '@/hooks/useStakeholders';
 import { supabase } from '@/lib/supabase';
 
@@ -19,11 +19,6 @@ const MapComponent = dynamic(() => import('./Map'), {
 
 export default function InteractiveMap() {
   const { stakeholders = [], loading: loadingStakeholders } = useStakeholders();
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-          setIsMounted(true);
-        }, []);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -102,15 +97,9 @@ export default function InteractiveMap() {
       </div>
 
       <div className="flex-1 flex gap-4 p-4 overflow-hidden">
-        {isMounted ? (
-              <Suspense fallback={<div className="flex-1 bg-gray-100" />}>
+        <Suspense fallback={<div className="flex-1 bg-gray-100" />}>
           <MapComponent stakeholders={stakeholders} selectedId={selectedId} setSelectedId={setSelectedId} />
         </Suspense>
-              ) : (
-                <div className="flex-1 bg-gray-100 flex items-center justify-center">
-                              <p className="text-gray-400">Karte wird geladen...</p>
-                            </div>
-              )}
 
         <div className="w-80 bg-white rounded-lg shadow-lg flex flex-col overflow-hidden border border-gray-200">
           <button
