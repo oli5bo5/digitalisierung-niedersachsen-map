@@ -128,20 +128,14 @@ export default function InteractiveMap() {
               <NavigationControl position="top-right" />
               {regions.map((region) => (
                 <Marker key={region.id} longitude={region.lng} latitude={region.lat}>
-                  <div className="cursor-pointer font-bold text-white bg-indigo-600 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
+                  <div className="cursor-pointer font-bold text-white bg-indigo-600 rounded-full w-10 h-10 flex items-center justify-center shadow-lg text-xs">
                     {region.name.charAt(0)}
                   </div>
                 </Marker>
               ))}
               {stakeholders.map((s) => (
-                <Marker
-                  key={s.id}
-                  longitude={s.longitude}
-                  latitude={s.latitude}
-                >
-                  <div className="cursor-pointer font-bold text-white bg-emerald-600 rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-emerald-700" onClick={() => setSelectedMarker(s)}>
-                    *
-                  </div>
+                <Marker key={s.id} longitude={s.longitude} latitude={s.latitude}>
+                  <div className="cursor-pointer text-lg">📍</div>
                 </Marker>
               ))}
               {selectedMarker && (
