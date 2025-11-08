@@ -1,0 +1,10 @@
+# Cloudflare Pages configuration for Next.js
+name = "digitalisierung-niedersachsen-map"
+main = ""
+compatibility_date = "2024-01-01"
+
+[build]
+command = "npm run build"
+destination = ".next"
+root_dir = "."
+package_manager = "npm"
