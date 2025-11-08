@@ -38,7 +38,7 @@ export function useStakeholders(regionId?: string) {
           id: item.id,
           name: item.name,
         latitude: item.location ? JSON.parse(item.location as string).coordinates[1] : 0,                  longitude: item.location ? JSON.parse(item.location as string).coordinates[0] : 0,        type: item.type,
-          region: item.region,
+          region: item.region_code,
           description: item.description
         }));
 
