@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
@@ -9,7 +8,7 @@ export interface Stakeholder {
   latitude: number;
   longitude: number;
   type: string;
-    region: string;
+  region: string;
   description?: string;
 }
 
@@ -19,12 +18,13 @@ export function useStakeholders(regionId?: string) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-                       const fetchStakeholders = async () => {
-                               try {
-                                         setLoading(true);
+    const fetchStakeholders = async () => {
+      try {
+        setLoading(true);
         let query = supabase
           .from('stakeholders')
-        .select('*, location')
+          .select('id, name, type, region_code, description, location');
+
         if (regionId) {
           query = query.eq('region_code', regionId);
         }
@@ -34,13 +34,40 @@ export function useStakeholders(regionId?: string) {
         if (error) throw error;
 
         // Map database fields to component interface
-        const mappedData = (data || []).map((item: any) => ({
-          id: item.id,
-          name: item.name,
-        latitude: item.location ? JSON.parse(item.location as string).coordinates[1] : 0,                  longitude: item.location ? JSON.parse(item.location as string).coordinates[0] : 0,        type: item.type,
-          region: item.region_code,
-          description: item.description
-        }));
+        const mappedData = (data || []).map((item: any) => {
+          let lat = 0;
+          let lng = 0;
+
+          // Handle geography data - could be WKB or GeoJSON
+          if (item.location) {
+            try {
+              // If it's a GeoJSON object
+              if (typeof item.location === 'object' && item.location.coordinates) {
+                lng = item.location.coordinates[0];
+                lat = item.location.coordinates[1];
+              } else if (typeof item.location === 'string') {
+                // If it's a GeoJSON string
+                const parsed = JSON.parse(item.location);
+                if (parsed.coordinates) {
+                  lng = parsed.coordinates[0];
+                  lat = parsed.coordinates[1];
+                }
+              }
+            } catch (e) {
+              console.warn('Could not parse location:', item.location, e);
+            }
+          }
+
+          return {
+            id: item.id,
+            name: item.name,
+            latitude: lat,
+            longitude: lng,
+            type: item.type,
+            region: item.region_code,
+            description: item.description,
+          };
+        });
 
         setStakeholders(mappedData);
       } catch (err) {
