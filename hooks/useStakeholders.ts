@@ -9,7 +9,7 @@ export interface Stakeholder {
   latitude: number;
   longitude: number;
   type: string;
-  region: string;
+  region_code: string;
   description?: string;
 }
 
@@ -26,7 +26,7 @@ export function useStakeholders(regionId?: string) {
           .from('stakeholders')
         .select('*, location')
         if (regionId) {
-          query = query.eq('region', regionId);
+          query = query.eq('region_code', regionId);
         }
 
         const { data, error } = await query;
