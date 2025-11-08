@@ -91,7 +91,7 @@ export default function MapComponent({ stakeholders, selectedId, setSelectedId }
       el.style.width = '30px';
       el.style.height = '30px';
       el.style.borderRadius = '50%';
-      el.style.backgroundColor = selectedId === stakeholder.id ? '#2563eb' : '#3b82f6';
+            el.style.backgroundColor = stakeholder.type === 'Akteur' ? '#dc2626' : (selectedId === stakeholder.id ? '#2563eb' : '#3b82f6');
       el.style.border = '2px solid white';
       el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
       el.style.cursor = 'pointer';
@@ -138,7 +138,7 @@ export default function MapComponent({ stakeholders, selectedId, setSelectedId }
       const stakeholder = stakeholders[index];
       if (stakeholder) {
         const el = marker.getElement();
-        el.style.backgroundColor = selectedId === stakeholder.id ? '#2563eb' : '#3b82f6';
+                el.style.backgroundColor = stakeholder.type === 'Akteur' ? '#dc2626' : (selectedId === stakeholder.id ? '#2563eb' : '#3b82f6');
       }
     });
   }, [selectedId, stakeholders]);
