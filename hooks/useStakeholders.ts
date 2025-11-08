@@ -18,8 +18,10 @@ export function useStakeholders(regionId?: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchStakeholders = async () => {      try {
-        setLoading(true);
+  useEffect(() => {
+                       const fetchStakeholders = async () => {
+                               try {
+                                         setLoading(true);
         let query = supabase
           .from('stakeholders')
         .select('*, location')
