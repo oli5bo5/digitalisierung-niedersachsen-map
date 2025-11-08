@@ -10,6 +10,7 @@ export interface Stakeholder {
   longitude: number;
   type: string;
   region_code: string;
+    region: string;
   description?: string;
 }
 
