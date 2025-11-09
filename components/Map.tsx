@@ -52,6 +52,44 @@ export default function MapComponent({ stakeholders, selectedId, setSelectedId }
       map.current.on('load', () => {
         setMapLoaded(true);
         setError(null);
+        
+      // Add Niedersachsen boundary
+      map.current.addSource('niedersachsen', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[
+              [6.654, 53.894], // Northwest corner
+              [11.598, 53.894], // Northeast corner
+              [11.598, 51.295], // Southeast corner
+              [6.654, 51.295], // Southwest corner
+              [6.654, 53.894]  // Close polygon
+            ]]
+          }
+        }
+      });
+
+      map.current.addLayer({
+        id: 'niedersachsen-fill',
+        type: 'fill',
+        source: 'niedersachsen',
+        paint: {
+          'fill-color': '#3b82f6',
+          'fill-opacity': 0.15
+        }
+      });
+
+      map.current.addLayer({
+        id: 'niedersachsen-outline',
+        type: 'line',
+        source: 'niedersachsen',
+        paint: {
+          'line-color': '#1e40af',
+          'line-width': 2
+        }
+      });
       });
 
       // Error handling
