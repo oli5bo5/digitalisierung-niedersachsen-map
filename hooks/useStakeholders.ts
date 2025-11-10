@@ -34,7 +34,7 @@ export function useStakeholders(regionId?: string) {
 
         // Map database fields to component interface
         const mappedData = (data || []).map((item: any) => {
-          let lat =       const mappedData = (data || []).map((item: any) => ({
+             const mappedData = (data || []).map((item: any) => ({
         id: item.id,
         name: item.name,
         latitude: item.latitude || 0,
