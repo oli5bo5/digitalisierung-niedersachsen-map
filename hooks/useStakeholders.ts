@@ -1,4 +1,3 @@
-```typescript
 import { useState, useEffect } from 'react';
 import { supabase, Stakeholder } from '../lib/supabase';
 
@@ -89,4 +88,3 @@ export function useStakeholders() {
     refetch: fetchStakeholders,
   };
 }
-```
