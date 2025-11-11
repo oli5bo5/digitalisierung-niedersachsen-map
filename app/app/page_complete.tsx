@@ -40,7 +40,7 @@ export default function Home() {
       console.log('✅ Supabase konfiguriert, lade Daten...');
       console.log('Fetching stakeholders from Supabase...');
       const { data, error: fetchError } = await supabase
-        .from('stakeholders')
+        .from('stakeholders_with_coords')
         .select('*')
         .order('name', { ascending: true });
 
