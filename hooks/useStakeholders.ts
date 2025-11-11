@@ -34,7 +34,7 @@ export function useStakeholders() {
         .order('name', { ascending: true });
 
       if (fetchError) {
-        console.error('Error fetching stakeholders:', fetchError);
+        const mappedData = (data ?? []).map((item: any) => ({
         setError(`Fehler beim Laden der Akteure: ${fetchError.message}`);
         setLoading(false);
         return;
