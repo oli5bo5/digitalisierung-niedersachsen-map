@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase, Stakeholder } from '../lib/supabase';
 
