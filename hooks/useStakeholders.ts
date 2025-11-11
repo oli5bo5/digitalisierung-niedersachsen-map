@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase, Stakeholder } from '../lib/supabase';
 
@@ -29,39 +28,31 @@ export function useStakeholders() {
 
       console.log('✅ Supabase konfiguriert, lade Daten...');
       const { data, error: fetchError } = await supabase
-        .from('stakeholders')
+        .from('stakeholders_with_coords')
         .select('*')
         .order('name', { ascending: true });
 
       if (fetchError) {
-        const mappedData = (data ?? []).map((item: any) => ({
+        console.error('Error fetching stakeholders:', fetchError);
         setError(`Fehler beim Laden der Akteure: ${fetchError.message}`);
         setLoading(false);
         return;
       }
 
       console.log('Raw data from Supabase:', data);
-         if (data) {
-     // Map database fields to component interface - support both column name variants
-     const mappedData = (data ?? []).map((item: any) => ({
-       id: item.id,
-       name: item.name,
-       latitude: parseFloat(item.latitude ?? 0) || 0,
-       longitude: parseFloat(item.longitude ?? 0) || 0,
-       type: item.type ?? item.stakeholder_type ?? 'Unbekannt',
-       region: item.region ?? item.region_code ?? 'Niedersachsen',
-       description: item.description ?? undefined,
-       ...item, // weitere Felder beibehalten
-     }))
-     .filter((s: Stakeholder) => {
-       // Filter out invalid entries (missing coordinates or name)
-       const isValid = s.latitude !== 0 && s.longitude !== 0 && s.name;
-       if (!isValid) {
-         console.warn('Invalid stakeholder (missing data):', s);
-       }
-       return isValid;
-     });
-     
+      
+      if (data) {
+        // Map database fields to component interface - support both column name variants
+        const mappedData = (data ?? []).map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          latitude: parseFloat(item.latitude ?? 0) || 0,
+          longitude: parseFloat(item.longitude ?? 0) || 0,
+          type: item.type ?? item.stakeholder_type ?? 'Unbekannt',
+          region: item.region ?? item.region_code ?? 'Niedersachsen',
+          description: item.description ?? undefined,
+          ...item, // weitere Felder beibehalten
+        }))
         .filter((s: Stakeholder) => {
           // Filter out invalid entries (missing coordinates or name)
           const isValid = s.latitude !== 0 && s.longitude !== 0 && s.name;
@@ -98,3 +89,4 @@ export function useStakeholders() {
     refetch: fetchStakeholders,
   };
 }
+
