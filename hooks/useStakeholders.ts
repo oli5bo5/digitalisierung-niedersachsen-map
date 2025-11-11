@@ -41,18 +41,27 @@ export function useStakeholders() {
       }
 
       console.log('Raw data from Supabase:', data);
-      
-      if (data) {
-        // Map database fields to component interface
-        const mappedData = (data || []).map((item: any) => ({
-          id: item.id,
-          name: item.name,
-          latitude: parseFloat(item.latitude) || 0,
-          longitude: parseFloat(item.longitude) || 0,
-          type: item.type || 'Unbekannt',
-          region: item.region || 'Niedersachsen',
-          description: item.description || undefined,
-        }))
+         if (data) {
+     // Map database fields to component interface - support both column name variants
+     const mappedData = (data ?? []).map((item: any) => ({
+       id: item.id,
+       name: item.name,
+       latitude: parseFloat(item.latitude ?? 0) || 0,
+       longitude: parseFloat(item.longitude ?? 0) || 0,
+       type: item.type ?? item.stakeholder_type ?? 'Unbekannt',
+       region: item.region ?? item.region_code ?? 'Niedersachsen',
+       description: item.description ?? undefined,
+       ...item, // weitere Felder beibehalten
+     }))
+     .filter((s: Stakeholder) => {
+       // Filter out invalid entries (missing coordinates or name)
+       const isValid = s.latitude !== 0 && s.longitude !== 0 && s.name;
+       if (!isValid) {
+         console.warn('Invalid stakeholder (missing data):', s);
+       }
+       return isValid;
+     });
+     
         .filter((s: Stakeholder) => {
           // Filter out invalid entries (missing coordinates or name)
           const isValid = s.latitude !== 0 && s.longitude !== 0 && s.name;
