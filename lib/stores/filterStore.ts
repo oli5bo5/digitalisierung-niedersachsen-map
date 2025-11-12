@@ -1,4 +1,3 @@
-```typescript
 import { create } from 'zustand';
 import { Filters, AreaType, StakeholderType, StatusType } from '@/lib/types/stakeholder';
 
