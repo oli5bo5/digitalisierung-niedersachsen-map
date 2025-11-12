@@ -45,11 +45,11 @@ export default function HomePage() {
         <MapView
           stakeholders={stakeholders}
           selectedStakeholder={selectedStakeholder}
-          onStakeholderClick={setSelectedStakeholder}
+          onSelectStakeholder={setSelectedStakeholder}
         />
       </main>
 
-      {/* Detail Drawer */}
+      {/* Detail onSelectStakeholder */}
       {selectedStakeholder && (
         <DetailDrawer
           stakeholder={selectedStakeholder}
