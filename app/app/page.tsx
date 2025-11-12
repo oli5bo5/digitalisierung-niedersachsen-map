@@ -9,7 +9,7 @@ import { Stakeholder } from '@/lib/types/stakeholder';
 import { Loader2 } from 'lucide-react';
 
 export default function HomePage() {
-  const { stakeholders, isLoading, error } = useStakeholders();
+  const { stakeholders, loading, error } = useStakeholders();
   const [selectedStakeholder, setSelectedStakeholder] = useState<Stakeholder | null>(null);
   const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
 
@@ -39,7 +39,7 @@ export default function HomePage() {
 
       {/* Map Container */}
       <div className="flex-1 relative">
-        {isLoading ? (
+        { ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-50">
             <div className="text-center">
               <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-2" />
