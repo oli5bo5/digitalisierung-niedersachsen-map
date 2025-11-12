@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FilterSidebar } from '@/components/Sidebar/FilterSidebar';
 import { MapView } from '@/components/Map/MapView';
 import { DetailDrawer } from '@/components/DetailPanel/DetailDrawer';
@@ -21,11 +21,9 @@ export default function HomePage() {
 
   if (error) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-50">
+      <div className="flex h-full w-full flex-items-center justify-center bg-gray-50">
         <div className="text-center">
-          <p className="text-red-600 font-semibold mb-2">
-            Fehler beim Laden der Daten
-          </p>
+          <p className="text-lg font-semibold text-red-600">Fehler beim Laden</p>
           <p className="text-sm text-gray-600">{error}</p>
         </div>
       </div>
@@ -37,23 +35,19 @@ export default function HomePage() {
       {/* Filter Sidebar */}
       <FilterSidebar />
 
-      {/* Map Container */}
-      <div className="flex-1 relative">
-        { ? (
-          <div className="w-full h-full flex items-center justify-center bg-gray-50">
-            <div className="text-center">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-2" />
-              <p className="text-sm text-gray-600">Lade Daten...</p>
-            </div>
+      {/* Main Map View */}
+      <main className="flex-1 relative">
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-50">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
           </div>
-        ) : (
-          <MapView
-            stakeholders={stakeholders}
-            selectedStakeholder={selectedStakeholder}
-            onSelectStakeholder={setSelectedStakeholder}
-          />
         )}
-      </div>
+        <MapView
+          stakeholders={stakeholders}
+          selectedStakeholder={selectedStakeholder}
+          onStakeholderClick={setSelectedStakeholder}
+        />
+      </main>
 
       {/* Detail Drawer */}
       {selectedStakeholder && (
