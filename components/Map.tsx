@@ -3,16 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-
-interface Stakeholder {
-  id: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-  type: string;
-  region: string;
-  description?: string;
-}
+import { Stakeholder } from '../lib/supabase';
 
 interface MapComponentProps {
   stakeholders: Stakeholder[];
@@ -29,194 +20,79 @@ export default function MapComponent({ stakeholders, selectedId, setSelectedId }
 
   // Initialize map
   useEffect(() => {
-    if (map.current || !mapContainer.current) return;
+    if (!mapContainer.current || map.current) return;
+
+    mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
 
     try {
-      // Set Mapbox access token
-      const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || 'pk.eyJ1IjoibXBvbGlzYm9zIiwiYSI6ImNtaG9uN2sycjA2Z2syb3NlbTI2eHhtcDMifQ.qMZ0pxhhl-Xpb-qQHGgvng';
-      mapboxgl.accessToken = token;
-
-      // Create map instance
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11',
-        center: [9.7320, 52.3759], // Center of Niedersachsen
-        zoom: 7,
-        attributionControl: true
+        center: [9.73, 52.37],
+        zoom: 7
       });
 
-      // Add navigation controls
-      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-      // Set loaded state when map is ready
-      map.current.on('load', () => {
-        setMapLoaded(true);
-        setError(null);
-        
-      // Add Niedersachsen boundary
-      map.current.addSource('niedersachsen', {
-        type: 'geojson',
-        data: {
-          type: 'Feature',
-          geometry: {
-            type: 'Polygon',
-            coordinates: [[
-              [6.654, 53.894], // Northwest corner
-              [11.598, 53.894], // Northeast corner
-              [11.598, 51.295], // Southeast corner
-              [6.654, 51.295], // Southwest corner
-              [6.654, 53.894]  // Close polygon
-            ]]
-          }
-        }
-      });
-
-      map.current.addLayer({
-        id: 'niedersachsen-fill',
-        type: 'fill',
-        source: 'niedersachsen',
-        paint: {
-          'fill-color': '#3b82f6',
-          'fill-opacity': 0.15
-        }
-      });
-
-      map.current.addLayer({
-        id: 'niedersachsen-outline',
-        type: 'line',
-        source: 'niedersachsen',
-        paint: {
-          'line-color': '#1e40af',
-          'line-width': 2
-        }
-      });
-      });
-
-      // Error handling
+      map.current.on('load', () => setMapLoaded(true));
       map.current.on('error', (e) => {
         console.error('Map error:', e);
-        setError('Fehler beim Laden der Karte');
+        setError('Kartenfehler');
       });
-
     } catch (err) {
-      console.error('Error initializing map:', err);
-      setError('Karte konnte nicht initialisiert werden');
+      console.error('Map init error:', err);
+      setError('Karte konnte nicht geladen werden');
     }
 
-    // Cleanup
     return () => {
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
+      map.current?.remove();
+      map.current = null;
     };
   }, []);
 
-  // Add markers when map is loaded and stakeholders change
+  // Add markers
   useEffect(() => {
-    if (!map.current || !mapLoaded || !stakeholders.length) return;
+    if (!map.current || !mapLoaded || !Array.isArray(stakeholders)) return;
 
     // Clear existing markers
-    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current.forEach(m => m.remove());
     markersRef.current = [];
 
     // Add new markers
-    stakeholders.forEach(stakeholder => {
-      if (!map.current || !stakeholder.latitude || !stakeholder.longitude) return;
+    stakeholders.forEach(s => {
+      if (!s.latitude || !s.longitude) return;
 
       const el = document.createElement('div');
-      el.className = 'custom-marker';
-      el.style.width = '30px';
-      el.style.height = '30px';
-      el.style.borderRadius = '50%';
-      el.style.backgroundColor = selectedId === stakeholder.id ? '#b91c1c' : '#dc2626';
-      el.style.border = '2px solid white';
-      el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-      el.style.cursor = 'pointer';
-      el.style.transition = 'all 0.2s';
+      el.className = 'w-6 h-6 bg-indigo-600 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-110 transition';
 
-      el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.2)';
-      });
+      const marker = new mapboxgl.Marker({ element: el })
+        .setLngLat([s.longitude, s.latitude])
+        .addTo(map.current!);
 
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1)';
-      });
-
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat([stakeholder.longitude, stakeholder.latitude])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 })
-            .setHTML(`
-              <div style="padding: 8px; min-width: 200px;">
-                <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold;">${stakeholder.name}</h3>
-                <p style="margin: 4px 0; font-size: 14px; color: #666;">
-                  <strong>Typ:</strong> ${stakeholder.type}
-                </p>
-                <p style="margin: 4px 0; font-size: 14px; color: #666;">
-                  <strong>Region:</strong> ${stakeholder.region}
-                </p>
-                ${stakeholder.description ? `<p style="margin: 8px 0 0 0; font-size: 13px;">${stakeholder.description}</p>` : ''}
-              </div>
-            `)
-        )
-        .addTo(map.current);
-
-      marker.getElement().addEventListener('click', () => {
-        setSelectedId(stakeholder.id);
-      });
-
+      el.addEventListener('click', () => setSelectedId(s.id));
       markersRef.current.push(marker);
     });
-  }, [stakeholders, mapLoaded, selectedId, setSelectedId]);
+  }, [mapLoaded, stakeholders, setSelectedId]);
 
-  // Update marker colors when selection changes
+  // Handle selected marker
   useEffect(() => {
-    markersRef.current.forEach((marker, index) => {
-      const stakeholder = stakeholders[index];
-      if (stakeholder) {
-        const el = marker.getElement();
-                el.style.backgroundColor = selectedId === stakeholder.id ? '#b91c1c' : '#dc2626';
-      }
-    });
-  }, [selectedId, stakeholders]);
+    if (!selectedId || !map.current || !Array.isArray(stakeholders)) return;
 
-  // Fly to selected stakeholder
-  useEffect(() => {
-    if (!map.current || !selectedId || !mapLoaded) return;
-
-    const stakeholder = stakeholders.find(s => s.id === selectedId);
-    if (stakeholder && stakeholder.latitude && stakeholder.longitude) {
+    const selected = stakeholders.find(s => s.id === selectedId);
+    if (selected?.latitude && selected?.longitude) {
       map.current.flyTo({
-        center: [stakeholder.longitude, stakeholder.latitude],
+        center: [selected.longitude, selected.latitude],
         zoom: 10,
         duration: 1000
       });
     }
-  }, [selectedId, stakeholders, mapLoaded]);
+  }, [selectedId, stakeholders]);
 
   if (error) {
     return (
-      <div className="flex-1 rounded-lg shadow-lg overflow-hidden bg-white flex items-center justify-center">
-        <div className="text-center p-8">
-          <p className="text-xl font-bold text-red-600 mb-4">{error}</p>
-          <p className="text-gray-500">Bitte versuchen Sie es später erneut</p>
-        </div>
+      <div className="flex-1 bg-gray-100 flex items-center justify-center">
+        <p className="text-red-600 font-semibold">{error}</p>
       </div>
     );
   }
 
-  return (
-    <div className="flex-1 rounded-lg shadow-lg overflow-hidden bg-white relative">
-      <div ref={mapContainer} className="w-full h-full" />
-      {!mapLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
-          <div className="text-center p-8">
-            <p className="text-xl font-bold text-gray-700 mb-4">Karte wird geladen...</p>
-            <p className="text-gray-500">Niedersachsen Digitalisierungsakteure</p>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  return <div ref={mapContainer} className="flex-1 rounded-lg shadow-lg overflow-hidden" />;
 }
