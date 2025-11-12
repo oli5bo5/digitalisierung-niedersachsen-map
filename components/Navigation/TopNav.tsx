@@ -1,76 +1,61 @@
-```typescript
 'use client';
 
 import Link from 'next/link';
-import { Download, Menu } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export function TopNav() {
-  const handleExport = () => {
-    // TODO: CSV/JSON Export implementieren
-    console.log('Export triggered');
-  };
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
-      <div className="container flex h-16 items-center justify-between px-4">
-        {/* Logo & Title */}
-        <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-400" />
-            <span className="hidden font-semibold text-lg md:inline-block">
-              Digitalisierungs-Landkarte Niedersachsen
-            </span>
-            <span className="font-semibold text-lg md:hidden">
-              Digi-Map NS
-            </span>
-          </Link>
-        </div>
+    <nav className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo/Brand */}
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center space-x-2">
+              <span className="text-xl font-bold text-gray-900">
+                Digitalisierung Niedersachsen
+              </span>
+            </Link>
+          </div>
 
-        {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
-          <Link 
-            href="/" 
-            className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
-          >
-            Karte
-          </Link>
-          <Link 
-            href="/liste" 
-            className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
-          >
-            Liste
-          </Link>
-          <Link 
-            href="/about" 
-            className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
-          >
-            Über das Projekt
-          </Link>
-          <Link 
-            href="/feedback" 
-            className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
-          >
-            Feedback
-          </Link>
-        </nav>
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link
+              href="/"
+              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Karte
+            </Link>
+            <Link
+              href="/about"
+              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Über
+            </Link>
+          </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={handleExport}
-            className="hidden sm:flex"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Menu className="h-5 w-5" />
-          </Button>
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              aria-label="Toggle menu"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-    </header>
+    </nav>
   );
 }
