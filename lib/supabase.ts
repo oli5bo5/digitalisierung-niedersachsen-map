@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { Stakeholder } from './types/stakeholder';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -14,16 +15,5 @@ export interface Region {
   created_at: string;
 }
 
-export interface Stakeholder {
-  id: string;
-  name: string;
-  type: 'government' | 'business' | 'education' | 'nonprofit' | 'other';
-  description: string;
-  website: string;
-  contact_email: string;
-  region_id: string;
-  location: any;
-  address: string;
-  created_at: string;
-  updated_at: string;
-}
+// Re-export Stakeholder type from types/stakeholder.ts
+export type { Stakeholder };
