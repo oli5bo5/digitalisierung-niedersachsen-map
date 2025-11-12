@@ -1,4 +1,4 @@
-```typescript
+
 'use client';
 
 import { Search, MapPin } from 'lucide-react';
@@ -52,4 +52,3 @@ export function SearchBar() {
     </div>
   );
 }
-```
