@@ -24,7 +24,7 @@ export default function InteractiveMap() {
   const [formData, setFormData] = useState({
     name: '',
     type: 'government',
-    region: 'hannover',
+    region_code: 'hannover',
     latitude: 52.37,
     longitude: 9.73,
     description: ''
@@ -51,7 +51,7 @@ export default function InteractiveMap() {
     if (region) {
       setFormData(prev => ({
         ...prev,
-        region: regionId,
+        region_code: regionId,
         latitude: region.lat,
         longitude: region.lng
       }));
@@ -65,7 +65,7 @@ export default function InteractiveMap() {
       const { error } = await supabase.from('stakeholders').insert([{
         name: formData.name,
         type: formData.type,
-        region: formData.region_code,
+        region_code: formData.region_code,
         latitude: formData.latitude,
         longitude: formData.longitude,
         description: formData.description
@@ -75,7 +75,7 @@ export default function InteractiveMap() {
       setFormData({
         name: '',
         type: 'government',
-        region: 'hannover',
+        region_code: 'hannover',
         latitude: 52.37,
         longitude: 9.73,
         description: ''
