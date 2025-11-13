@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Filters, AreaType, StakeholderType, StatusType } from '@/lib/types/stakeholder';
+import { Filters, AreaType, StakeholderType, StatusType } from '@/lib/supabase';
 
 interface FilterState extends Filters {
   setSearch: (search: string) => void;
