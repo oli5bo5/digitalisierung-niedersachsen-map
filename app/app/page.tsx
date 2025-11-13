@@ -5,7 +5,7 @@ import { FilterSidebar } from '@/components/Sidebar/FilterSidebar';
 import { MapView } from '@/components/Map/MapView';
 import { DetailDrawer } from '@/components/DetailPanel/DetailDrawer';
 import { useStakeholders } from '@/hooks/useStakeholders';
-import { Stakeholder } from '@/lib/types/stakeholder';
+import { Stakeholder } from '@/lib/supabase';
 import { Loader2 } from 'lucide-react';
 
 export default function HomePage() {
