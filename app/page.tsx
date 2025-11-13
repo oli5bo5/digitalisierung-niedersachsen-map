@@ -24,7 +24,7 @@ export default function HomePage() {
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-2">Fehler beim Laden</h1>
-          <p className="text-gray-600">{error.message}</p>
+          <p className="text-gray-600">{error}</p>
         </div>
       </div>
     );
