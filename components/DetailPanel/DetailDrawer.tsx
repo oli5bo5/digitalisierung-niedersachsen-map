@@ -3,7 +3,7 @@
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StakeholderCard } from './StakeholderCard';
-import { Stakeholder } from '@/lib/types/stakeholder';
+import { Stakeholder } from '@/lib/supabase';
 
 interface DetailDrawerProps {
   stakeholder: Stakeholder | null;
