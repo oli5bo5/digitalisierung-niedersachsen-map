@@ -4,7 +4,7 @@ import { useState, useCallback, useMemo } from 'react';
 import Map, { NavigationControl, ScaleControl } from 'react-map-gl';
 import { StakeholderMarker } from './StakeholderMarker';
 import { MapLegend } from './MapLegend';
-import { Stakeholder } from '@/lib/types/stakeholder';
+import { Stakeholder } from '@/lib/supabase';
 
 interface MapViewProps {
   stakeholders: Stakeholder[];
