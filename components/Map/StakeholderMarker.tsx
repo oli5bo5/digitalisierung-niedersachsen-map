@@ -1,7 +1,7 @@
 'use client';
 
 import { Marker } from 'react-map-gl';
-import { Stakeholder } from '@/lib/types/stakeholder';
+import { Stakeholder } from '@/lib/supabase';
 import { areaColors } from '@/lib/utils/helpers';
 
 interface StakeholderMarkerProps {
