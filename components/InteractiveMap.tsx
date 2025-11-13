@@ -65,7 +65,7 @@ export default function InteractiveMap() {
       const { error } = await supabase.from('stakeholders').insert([{
         name: formData.name,
         type: formData.type,
-        region: formData.region,
+        region: formData.region_code,
         latitude: formData.latitude,
         longitude: formData.longitude,
         description: formData.description
@@ -130,7 +130,7 @@ export default function InteractiveMap() {
                 ))}
               </select>
               <select
-                value={formData.region}
+                value={formData.region_code}
                 onChange={(e) => handleRegionChange(e.target.value)}
                 className="w-full px-3 py-2 border rounded text-sm"
               >
@@ -174,7 +174,7 @@ export default function InteractiveMap() {
                     type="button"
                   >
                     <div className="font-semibold text-sm">{s.name}</div>
-                    <div className="text-xs text-gray-600">{s.type} • {s.region}</div>
+                    <div className="text-xs text-gray-600">{s.type} • {s.region_code}</div>
                   </button>
                 ))}
               </div>
