@@ -1,7 +1,7 @@
 'use client';
 
 import { areaColors, areaLabels } from '@/lib/utils/helpers';
-import { AreaType } from '@/lib/types/stakeholder';
+import { AreaType } from '@/lib/supabase';
 
 export function MapLegend() {
   return (
