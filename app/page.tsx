@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FilterSidebar } from '@/components/Sidebar/FilterSidebar';
-import { MapView } from '@/components/Map/MapView';
+import { MapComponent } from '../components/Map';
 import { DetailDrawer } from '@/components/DetailPanel/DetailDrawer';
 import { useStakeholders } from '@/hooks/useStakeholders';
 import { Stakeholder } from '@/lib/supabase';
@@ -10,7 +10,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function HomePage() {
   const { stakeholders, loading, error } = useStakeholders();
-  const [selectedStakeholder, setSelectedStakeholder] = useState<Stakeholder | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
 
   const handleFeedback = (stakeholder: Stakeholder) => {
@@ -23,33 +23,48 @@ export default function HomePage() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-2">Fehler beim Laden</h1>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Fehler beim Laden der Daten</h1>
           <p className="text-gray-600">{error}</p>
+          <p className="text-sm text-gray-500 mt-4">Bitte überprüfen Sie Ihre Supabase-Konfiguration</p>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="flex h-screen">
+    <div className="flex h-screen">
+      {/* Sidebar */}
       <FilterSidebar />
-      <div className="flex-1 relative">
-        {loading ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        ) : (
-          <MapView
-            stakeholders={stakeholders}
-            onStakeholderClick={setSelectedStakeholder}
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Map */}
+        <div className="flex-1 relative">
+          {loading ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-2" />
+                <p className="text-gray-600">Daten werden geladen...</p>
+              </div>
+            </div>
+          ) : (
+            <MapComponent 
+              stakeholders={stakeholders} 
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
+            />
+          )}
+        </div>
+
+        {/* Detail Panel */}
+        {selectedId && (
+          <DetailDrawer
+            stakeholder={stakeholders.find(s => s.id === selectedId) || null}
+            onClose={() => setSelectedId(null)}
+            onFeedback={handleFeedback}
           />
         )}
       </div>
-      <DetailDrawer
-        stakeholder={selectedStakeholder}
-        onClose={() => setSelectedStakeholder(null)}
-        onFeedback={handleFeedback}
-      />
-    </main>
+    </div>
   );
 }
