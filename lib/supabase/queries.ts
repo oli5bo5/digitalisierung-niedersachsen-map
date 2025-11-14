@@ -1,4 +1,3 @@
-```typescript
 import { supabase } from './client';
 import { Filters, Stakeholder } from '@/lib/supabase';
 
