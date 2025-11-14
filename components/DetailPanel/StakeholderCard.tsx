@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Stakeholder } from '@/lib/types/stakeholder';
+import { Stakeholder } from '@/lib/supabase';
 import { 
   areaColors, 
   areaLabels, 
