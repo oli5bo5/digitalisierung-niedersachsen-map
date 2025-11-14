@@ -64,5 +64,5 @@ export interface Filters {
   areas: AreaType[];
   types: StakeholderType[];
   status: StatusType[];
-  status: string[];
+  regionCodes: string[];
 }
