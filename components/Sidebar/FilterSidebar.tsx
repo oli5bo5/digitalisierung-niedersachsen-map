@@ -105,7 +105,7 @@ export function FilterSidebar() {
       {/* Footer mit Ergebnis-Count */}
       <div className="p-4 border-t border-gray-200 bg-gray-50">
         <p className="text-sm text-gray-600 text-center">
-          {isLoading ? (
+          {loading ? (
             <span className="text-gray-400">Lädt...</span>
           ) : (
             <>
