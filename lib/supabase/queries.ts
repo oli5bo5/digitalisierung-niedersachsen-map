@@ -103,6 +103,8 @@ export async function fetchStakeholderById(id: string): Promise<Stakeholder | nu
       type: 'Point' as const,
       coordinates: [parseFloat(data.longitude ?? 0), parseFloat(data.latitude ?? 0)] as [number, number],
     },
+        latitude: parseFloat(data.latitude ?? 0),
+        longitude: parseFloat(data.longitude ?? 0),
     status: (data.status ?? 'unbekannt') as Stakeholder['status'],
     last_checked_at: data.last_checked_at,
     check_source: data.check_source,
