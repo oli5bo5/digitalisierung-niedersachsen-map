@@ -57,3 +57,12 @@ export interface Stakeholder {
     latitude: number;
     longitude: number;
 }
+
+// Filter interface for sidebar filtering
+export interface Filters {
+  search: string;
+  areas: AreaType[];
+  types: StakeholderType[];
+  statuses: StatusType[];
+  regionCodes: string[];
+}
