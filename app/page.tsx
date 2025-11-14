@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FilterSidebar } from '@/components/Sidebar/FilterSidebar';
-import { MapComponent } from '../components/Map';
+import MapComponent from '../components/Map';
 import { DetailDrawer } from '@/components/DetailPanel/DetailDrawer';
 import { useStakeholders } from '@/hooks/useStakeholders';
 import { Stakeholder } from '@/lib/supabase';
