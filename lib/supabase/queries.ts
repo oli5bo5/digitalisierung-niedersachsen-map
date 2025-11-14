@@ -1,6 +1,6 @@
 ```typescript
 import { supabase } from './client';
-import { Filters, Stakeholder } from '@/lib/types/stakeholder';
+import { Filters, Stakeholder } from '@/lib/supabase';
 
 export async function fetchStakeholders(filters: Filters): Promise<Stakeholder[]> {
   let query = supabase
