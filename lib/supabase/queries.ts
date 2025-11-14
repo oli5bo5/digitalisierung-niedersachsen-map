@@ -57,6 +57,8 @@ export async function fetchStakeholders(filters: Filters): Promise<Stakeholder[]
       type: 'Point' as const,
       coordinates: [parseFloat(item.longitude ?? 0), parseFloat(item.latitude ?? 0)] as [number, number],
     },
+        latitude: parseFloat(item.latitude ?? 0),
+        longitude: parseFloat(item.longitude ?? 0),
     status: (item.status ?? 'unbekannt') as Stakeholder['status'],
     last_checked_at: item.last_checked_at,
     check_source: item.check_source,
