@@ -25,7 +25,7 @@ export function FilterSidebar() {
     resetFilters,
   } = useFilterStore();
 
-  const { stakeholders, isLoading } = useStakeholders();
+  const { stakeholders, loading } = useStakeholders();
 
   // Bereiche Options
   const areaOptions = Object.entries(areaLabels).map(([value, label]) => ({
