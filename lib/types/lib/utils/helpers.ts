@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { AreaType, StakeholderType } from '../types/stakeholder';
+import { AreaType, StakeholderType } from '../../stakeholder';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
