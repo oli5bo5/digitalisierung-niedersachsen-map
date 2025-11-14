@@ -54,4 +54,6 @@ export interface Stakeholder {
   check_source?: 'auto' | 'manual';
   created_at: string;
   updated_at: string;
+    latitude: number;
+    longitude: number;
 }
