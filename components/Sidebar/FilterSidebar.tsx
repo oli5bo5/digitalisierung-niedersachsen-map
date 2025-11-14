@@ -12,7 +12,7 @@ import {
   typeIcons, 
   typeLabels 
 } from '@/lib/utils/helpers';
-import { AreaType, StakeholderType, StatusType } from '@/lib/types/stakeholder';
+import { AreaType, StakeholderType, StatusType } from '@/lib/supabase';
 
 export function FilterSidebar() {
   const {
