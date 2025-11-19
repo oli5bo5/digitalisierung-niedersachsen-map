@@ -126,3 +126,8 @@ This project is licensed under the MIT License.
 ## Support
 
 For issues or questions, please open an issue on GitHub.
+
+
+## Deployment Status
+
+Deployment successfully triggered on Vercel.
