@@ -133,3 +133,6 @@ For issues or questions, please open an issue on GitHub.
 Deployment successfully triggered on Vercel.
 
   
+
+
+<!-- Force rebuild with correct Mapbox token -->
