@@ -1,5 +1,5 @@
 'use client';
 
-import MapComponent from './MapComponent';
+import { MapView } from './MapView';
 
-export default MapComponent;
+export default MapView;
