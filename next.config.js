@@ -7,8 +7,6 @@ const nextConfig = {
     };
     return config;
   },
-  // Cloudflare Pages Konfiguration
-  output: 'export',
       
   images: {
     unoptimized: true,
