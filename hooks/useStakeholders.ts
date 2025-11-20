@@ -28,7 +28,7 @@ export function useStakeholders() {
 
       console.log('✅ Supabase konfiguriert, lade Daten...');
       const { data, error: fetchError } = await supabase
-        .from('stakeholders_with_coords')
+        .from('stakeholders')
         .select('*')
         .order('name', { ascending: true });
 
