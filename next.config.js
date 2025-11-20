@@ -9,7 +9,7 @@ const nextConfig = {
   },
   // Cloudflare Pages Konfiguration
 
-      ...(process.env.CF_PAGES === '1' ? { output: 'export' } : {}),
+      
   images: {
     unoptimized: true,
   },
