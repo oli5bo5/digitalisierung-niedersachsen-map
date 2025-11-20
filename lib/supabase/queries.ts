@@ -3,8 +3,7 @@ import { Filters, Stakeholder } from '@/lib/supabase';
 
 export async function fetchStakeholders(filters: Filters): Promise<Stakeholder[]> {
   let query = supabase
-    .from('stakeholders_with_coords')
-    .select('*')
+.from('stakeholders')    .select('*')
     .order('name');
 
   // Text-Suche
@@ -74,7 +73,7 @@ export async function fetchStakeholders(filters: Filters): Promise<Stakeholder[]
 
 export async function fetchStakeholderById(id: string): Promise<Stakeholder | null> {
   const { data, error } = await supabase
-    .from('stakeholders_with_coords')
+    .from('')
     .select('*')
     .eq('id', id)
     .single();
