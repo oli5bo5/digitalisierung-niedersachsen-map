@@ -8,7 +8,8 @@ const nextConfig = {
     return config;
   },
   // Cloudflare Pages Konfiguration
-  // output: 'export', // Only for Cloudflare Pages - Vercel doesn't need this
+
+      ...(process.env.CF_PAGES === '1' ? { output: 'export' } : {}),
   images: {
     unoptimized: true,
   },
