@@ -5,11 +5,7 @@ import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { FilterSidebar } from '@/components/Sidebar/FilterSidebar';
 
-const MapComponent = dynamic(() => import('../components/Map'), {
-    ssr: false,
-    loading: () => <div className="w-full h-full flex items-center justify-center">Loading map...</div>
-      });
-import { DetailDrawer } from '@/components/DetailPanel/DetailDrawer';
+const MapComponent = dynamic(() => import('../components/Map'), { ssr: false });import { DetailDrawer } from '@/components/DetailPanel/DetailDrawer';
 import { useStakeholders } from '@/hooks/useStakeholders';
 import { Stakeholder } from '@/lib/supabase';
 import { Loader2 } from 'lucide-react';
