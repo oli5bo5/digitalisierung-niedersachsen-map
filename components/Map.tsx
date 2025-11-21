@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo } from 'react';
-import { ComposableMap, Geographies, Geography, Annotation } from 'react-simple-maps';
 
 interface Stakeholder {
   id: string;
@@ -19,14 +18,6 @@ interface MapComponentProps {
   setSelectedId: (id: string | null) => void;
 }
 
-const GEO_URL =
-  'https://raw.githubusercontent.com/deldersveld/topojson/master/countries/germany/germany-states.json';
-
-const BASE_FILL = '#E0E7FF';
-const HIGHLIGHT_FILL = '#1D4ED8';
-const BORDER_COLOR = '#FFFFFF';
-const ANNOTATION_COLOR = '#1E40AF';
-
 export default function MapComponent({ stakeholders, selectedId, setSelectedId }: MapComponentProps) {
   const totalStakeholders = stakeholders.length;
   const niedersachsenStakeholders = useMemo(
@@ -40,88 +31,95 @@ export default function MapComponent({ stakeholders, selectedId, setSelectedId }
   );
 
   return (
-    <div className="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col items-center justify-center p-4">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Digitalisierungs-Landkarte Deutschland</h2>
-      <p className="text-gray-600 mb-6">
-        Fokus auf Niedersachsen mit {niedersachsenStakeholders} von {totalStakeholders} Akteuren
-      </p>
-      
-      {/* Debug: Force new deployment */}
-      <div className="text-xs text-gray-400 mb-2">Version: 2024-11-21 11:42</div>
+    <div className="relative w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg shadow-lg flex flex-col items-center justify-center p-8">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-4">🗺️ Deutschland-Karte</h2>
+        <div className="text-xs text-gray-400 mb-4">Version: 2024-11-21 11:45 - Statische Implementierung</div>
+        <p className="text-lg text-gray-700 mb-6">
+          Fokusregion: <span className="font-bold text-blue-600">Niedersachsen</span>
+        </p>
+      </div>
 
-      <ComposableMap
-        projection="geoMercator"
-        projectionConfig={{
-          scale: 3500, // Adjust scale to fit Germany
-          center: [10.5, 51.5], // Center on Germany
-        }}
-        width={800}
-        height={800}
-        className="w-full h-full"
-      >
-        <Geographies geography={GEO_URL}>
-          {({ geographies }) =>
-            geographies.map((geo) => {
-              const stateName =
-                (geo.properties as Record<string, string | undefined>).name ||
-                (geo.properties as Record<string, string | undefined>).NAME_1 ||
-                '';
-              const isNiedersachsen = stateName.toLowerCase().includes('nieders');
-              return (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill={isNiedersachsen ? HIGHLIGHT_FILL : BASE_FILL}
-                  stroke={BORDER_COLOR}
-                  strokeWidth={0.5}
-                  style={{
-                    hover: {
-                      fill: isNiedersachsen ? HIGHLIGHT_FILL : '#A0A0A0',
-                      outline: 'none',
-                    },
-                    pressed: {
-                      fill: isNiedersachsen ? HIGHLIGHT_FILL : '#808080',
-                      outline: 'none',
-                    },
-                  }}
-                  onClick={() => {
-                    // Handle click on a state if needed
-                    console.log('Clicked on state:', stateName);
-                    setSelectedId(null); // Deselect any stakeholder
-                  }}
-                />
-              );
-            })
-          }
-        </Geographies>
-
-        {/* Annotation for Niedersachsen */}
-        <Annotation
-          subject={[9.8, 52.5]} // Coordinates for Niedersachsen
-          dx={-90}
-          dy={-30}
-          connectorProps={{
-            stroke: ANNOTATION_COLOR,
-            strokeWidth: 2,
-            strokeLinecap: 'round',
-          }}
-        >
-          <text x="-8" textAnchor="end" alignmentBaseline="middle" fill={ANNOTATION_COLOR} fontSize={16} fontWeight="bold">
+      {/* Simplified Germany Map using CSS */}
+      <div className="relative mb-8">
+        {/* Germany outline - simplified shape */}
+        <div className="relative w-80 h-96 mx-auto">
+          {/* Base Germany shape */}
+          <div className="absolute inset-0 bg-gray-200 rounded-3xl border-4 border-gray-300 shadow-lg transform rotate-12"></div>
+          
+          {/* Niedersachsen region - highlighted */}
+          <div className="absolute top-16 left-8 w-24 h-20 bg-blue-600 rounded-xl shadow-md border-2 border-blue-800"></div>
+          <div className="absolute top-14 left-6 text-white text-xs font-bold bg-blue-700 px-2 py-1 rounded transform -rotate-12">
             Niedersachsen
-          </text>
-        </Annotation>
-      </ComposableMap>
+          </div>
+          
+          {/* Other regions - lighter */}
+          <div className="absolute top-8 right-12 w-16 h-16 bg-gray-300 rounded-lg opacity-60"></div>
+          <div className="absolute bottom-20 left-12 w-20 h-16 bg-gray-300 rounded-lg opacity-60"></div>
+          <div className="absolute bottom-12 right-8 w-18 h-20 bg-gray-300 rounded-lg opacity-60"></div>
+          <div className="absolute top-1/3 right-1/4 w-14 h-18 bg-gray-300 rounded-lg opacity-60"></div>
+        </div>
+      </div>
 
+      {/* Statistics */}
+      <div className="grid grid-cols-2 gap-6 mb-8 max-w-md w-full">
+        <div className="bg-white border-2 border-blue-200 rounded-xl p-6 text-center shadow-lg">
+          <div className="text-3xl font-bold text-blue-600 mb-2">{totalStakeholders}</div>
+          <div className="text-sm text-gray-600 font-medium">Akteure Gesamt</div>
+        </div>
+        <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-6 text-center shadow-lg">
+          <div className="text-3xl font-bold text-blue-800 mb-2">{niedersachsenStakeholders}</div>
+          <div className="text-sm text-blue-700 font-medium">in Niedersachsen</div>
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="bg-white/90 rounded-lg p-4 shadow-md max-w-md w-full">
+        <h3 className="font-bold text-gray-800 mb-3 text-center">Legende</h3>
+        <div className="space-y-2">
+          <div className="flex items-center">
+            <div className="w-4 h-4 bg-blue-600 rounded mr-3"></div>
+            <span className="text-sm text-gray-700">Niedersachsen (Fokusregion)</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-4 h-4 bg-gray-300 rounded mr-3"></div>
+            <span className="text-sm text-gray-700">Andere Bundesländer</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Selected Stakeholder Info */}
       {selectedStakeholder && (
-        <div className="absolute bottom-4 right-4 bg-white p-4 rounded-lg shadow-md max-w-xs">
-          <h3 className="font-bold text-lg mb-1">{selectedStakeholder.name}</h3>
-          <p className="text-sm text-gray-600">Typ: {selectedStakeholder.type}</p>
-          <p className="text-sm text-gray-600">Region: {selectedStakeholder.region}</p>
+        <div className="absolute bottom-4 right-4 bg-white/95 border-2 border-blue-200 rounded-lg p-4 shadow-lg max-w-xs backdrop-blur-sm">
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="font-bold text-lg text-gray-900">{selectedStakeholder.name}</h3>
+            <button
+              onClick={(event) => {
+                event.stopPropagation();
+                setSelectedId(null);
+              }}
+              className="text-gray-400 hover:text-gray-600 ml-2"
+            >
+              ✕
+            </button>
+          </div>
+          <p className="text-sm text-gray-600">
+            <span className="font-medium">Typ:</span> {selectedStakeholder.type}
+          </p>
+          <p className="text-sm text-gray-600">
+            <span className="font-medium">Region:</span> {selectedStakeholder.region}
+          </p>
           {selectedStakeholder.description && (
             <p className="text-xs text-gray-500 mt-2 line-clamp-3">{selectedStakeholder.description}</p>
           )}
         </div>
       )}
+
+      {/* Info Text */}
+      <div className="absolute bottom-4 left-4 bg-white/80 rounded p-3 text-xs text-gray-600 max-w-xs">
+        ℹ️ Diese statische Karte zeigt die geografische Verteilung der Digitalisierungsakteure in Deutschland mit Fokus auf Niedersachsen.
+      </div>
     </div>
   );
 }
