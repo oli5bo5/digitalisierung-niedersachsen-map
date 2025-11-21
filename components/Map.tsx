@@ -1,9 +1,17 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import { Stakeholder } from '../lib/supabase';
+import { useMemo } from 'react';
+import { ComposableMap, Geographies, Geography, Annotation } from 'react-simple-maps';
+
+interface Stakeholder {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  type: string;
+  region: string;
+  description?: string;
+}
 
 interface MapComponentProps {
   stakeholders: Stakeholder[];
@@ -11,88 +19,146 @@ interface MapComponentProps {
   setSelectedId: (id: string | null) => void;
 }
 
+const GEO_URL =
+  'https://raw.githubusercontent.com/deldersveld/topojson/master/countries/germany/germany-states.json';
+
+const BASE_FILL = '#BFDBFE';
+const HIGHLIGHT_FILL = '#1D4ED8';
+const BORDER_COLOR = '#E0E7FF';
+
 export default function MapComponent({ stakeholders, selectedId, setSelectedId }: MapComponentProps) {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const selectedStakeholder = useMemo(
+    () => stakeholders.find((stakeholder) => stakeholder.id === selectedId) ?? null,
+    [selectedId, stakeholders],
+  );
 
-  // Initialize map
-  useEffect(() => {
-    if (!mapContainer.current || map.current) return;
+  const summary = useMemo(() => {
+    const highlighted = stakeholders.filter((stakeholder) =>
+      (stakeholder.region || '').toLowerCase().includes('nieders'),
+    ).length;
 
-    mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
-
-    try {
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/light-v11',
-        center: [9.73, 52.37],
-        zoom: 7
-      });
-
-      map.current.on('load', () => setMapLoaded(true));
-      map.current.on('error', (e) => {
-        console.error('Map error:', e);
-        setError('Kartenfehler');
-      });
-    } catch (err) {
-      console.error('Map init error:', err);
-      setError('Karte konnte nicht geladen werden');
-    }
-
-    return () => {
-      map.current?.remove();
-      map.current = null;
+    return {
+      total: stakeholders.length,
+      highlighted: highlighted || stakeholders.length,
     };
-  }, []);
+  }, [stakeholders]);
 
-  // Add markers
-  useEffect(() => {
-    if (!map.current || !mapLoaded || !Array.isArray(stakeholders)) return;
+  return (
+    <div
+      className="flex-1 rounded-lg shadow-lg bg-white relative overflow-hidden"
+      onClick={() => setSelectedId(null)}
+    >
+      <div className="absolute inset-0 pointer-events-none">
+        <ComposableMap
+          width={800}
+          height={900}
+          projection="geoMercator"
+          projectionConfig={{ center: [10.4515, 51.0], scale: 2500 }}
+        >
+          <Geographies geography={GEO_URL}>
+            {({ geographies }) =>
+              geographies.map((geo) => {
+                const stateName =
+                  (geo.properties as Record<string, string | undefined>).name ||
+                  (geo.properties as Record<string, string | undefined>).NAME_1 ||
+                  '';
+                const isNiedersachsen = stateName.toLowerCase().includes('nieders');
 
-    // Clear existing markers
-    markersRef.current.forEach(m => m.remove());
-    markersRef.current = [];
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill={isNiedersachsen ? HIGHLIGHT_FILL : BASE_FILL}
+                    stroke={BORDER_COLOR}
+                    strokeWidth={0.8}
+                    style={{
+                      default: { outline: 'none' },
+                      hover: { outline: 'none' },
+                      pressed: { outline: 'none' },
+                    }}
+                  />
+                );
+              })
+            }
+          </Geographies>
 
-    // Add new markers
-    stakeholders.forEach(s => {
-      if (!s.latitude || !s.longitude) return;
-
-      const el = document.createElement('div');
-      el.className = 'w-6 h-6 bg-indigo-600 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-110 transition';
-
-      const marker = new mapboxgl.Marker({ element: el })
-        .setLngLat([s.longitude, s.latitude])
-        .addTo(map.current!);
-
-      el.addEventListener('click', () => setSelectedId(s.id));
-      markersRef.current.push(marker);
-    });
-  }, [mapLoaded, stakeholders, setSelectedId]);
-
-  // Handle selected marker
-  useEffect(() => {
-    if (!selectedId || !map.current || !Array.isArray(stakeholders)) return;
-
-    const selected = stakeholders.find(s => s.id === selectedId);
-    if (selected?.latitude && selected?.longitude) {
-      map.current.flyTo({
-        center: [selected.longitude, selected.latitude],
-        zoom: 10,
-        duration: 1000
-      });
-    }
-  }, [selectedId, stakeholders]);
-
-  if (error) {
-    return (
-      <div className="flex-1 bg-gray-100 flex items-center justify-center">
-        <p className="text-red-600 font-semibold">{error}</p>
+          <Annotation
+            subject={[9.8, 52.8]}
+            dx={-80}
+            dy={-40}
+            connectorProps={{
+              stroke: '#1D4ED8',
+              strokeWidth: 2,
+              strokeLinecap: 'round',
+            }}
+          >
+            <g fill="#1D4ED8">
+              <rect x={-90} y={-35} width={160} height={70} rx={8} fill="#1D4ED8" opacity={0.15} />
+              <text x={-10} y={-5} textAnchor="middle" fontSize={18} fontWeight={700} fill="#1D4ED8">
+                Niedersachsen
+              </text>
+              <text x={-10} y={20} textAnchor="middle" fontSize={12} fill="#1D4ED8">
+                Fokusregion
+              </text>
+            </g>
+          </Annotation>
+        </ComposableMap>
       </div>
-    );
-  }
 
-  return <div ref={mapContainer} className="flex-1 rounded-lg shadow-lg overflow-hidden" />;
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white pointer-events-none" />
+
+      <div className="relative h-full flex flex-col justify-between p-6 pointer-events-none">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Deutschlandkarte</h2>
+          <p className="text-gray-600 max-w-xl">
+            Niedersachsen ist hervorgehoben. Die Karte ist als statische Grafik eingebunden, damit sie auf allen
+            Endgeräten identisch aussieht – unabhängig von Mapbox oder WebGL.
+          </p>
+
+          <div className="mt-6 grid grid-cols-2 gap-4 max-w-md">
+            <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+              <p className="text-sm text-blue-600">Gesamtanzahl</p>
+              <p className="text-2xl font-semibold text-blue-800">{summary.total}</p>
+            </div>
+            <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-4">
+              <p className="text-sm text-indigo-600">in Niedersachsen</p>
+              <p className="text-2xl font-semibold text-indigo-800">{summary.highlighted}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="pointer-events-auto">
+          {selectedStakeholder ? (
+            <div className="bg-white/90 border border-blue-100 rounded-lg p-4 shadow-lg">
+              <p className="text-sm uppercase tracking-wide text-blue-500 font-semibold mb-1">Auswahl</p>
+              <h3 className="text-xl font-bold text-gray-900">{selectedStakeholder.name}</h3>
+              <p className="text-sm text-gray-600 mt-1">
+                {selectedStakeholder.type} · {selectedStakeholder.region}
+              </p>
+              {selectedStakeholder.description && (
+                <p className="text-sm text-gray-500 mt-2">{selectedStakeholder.description}</p>
+              )}
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setSelectedId(null);
+                }}
+                className="mt-4 text-sm text-blue-600 hover:underline"
+              >
+                Auswahl zurücksetzen
+              </button>
+            </div>
+          } : (
+            <div className="bg-white/90 border border-gray-100 rounded-lg p-4 shadow">
+              <p className="text-sm text-gray-600">
+                Wähle links einen Akteur, um die Details hier anzuzeigen. Die Karte bleibt eine feste Grafik mit
+                hervorgehobener Fokusregion.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
+
