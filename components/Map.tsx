@@ -45,6 +45,9 @@ export default function MapComponent({ stakeholders, selectedId, setSelectedId }
       <p className="text-gray-600 mb-6">
         Fokus auf Niedersachsen mit {niedersachsenStakeholders} von {totalStakeholders} Akteuren
       </p>
+      
+      {/* Debug: Force new deployment */}
+      <div className="text-xs text-gray-400 mb-2">Version: 2024-11-21 11:42</div>
 
       <ComposableMap
         projection="geoMercator"
