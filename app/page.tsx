@@ -2,7 +2,12 @@
 
 import InteractiveMap from '../components/InteractiveMap';
 
+// EMERGENCY: Vercel Cache Problem - Force Complete Rebuild v3.0
 export default function Home() {
-  // Force Vercel rebuild - Version 2.0 with Manus InteractiveMap
-  return <InteractiveMap />;
+  console.log('🚀 MANUS INTERACTIVE MAP - Version 3.0 - Forced Rebuild');
+  return (
+    <div>
+      <InteractiveMap />
+    </div>
+  );
 }
