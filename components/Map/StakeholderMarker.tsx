@@ -14,9 +14,13 @@ export function StakeholderMarker({ stakeholder, onClick }: StakeholderMarkerPro
   const primaryColor = stakeholder.areas && stakeholder.areas[0] ? 
     areaColors[stakeholder.areas[0]] : '#3B82F6';
   
-  // Use latitude/longitude from stakeholder object
-  const longitude = stakeholder.longitude || (stakeholder.location?.coordinates?.[0]);
-  const latitude = stakeholder.latitude || (stakeholder.location?.coordinates?.[1]);
+  // Use latitude/longitude from stakeholder object with proper fallbacks
+  const longitude = stakeholder.longitude || stakeholder.location?.coordinates?.[0] || 9.73;
+  const latitude = stakeholder.latitude || stakeholder.location?.coordinates?.[1] || 52.37;
+  
+  if (!longitude || !latitude) {
+    return null; // Don't render marker without coordinates
+  }
   
   return (
     <Marker
