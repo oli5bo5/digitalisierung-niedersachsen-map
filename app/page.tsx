@@ -1,13 +1,9 @@
 'use client';
 
-import InteractiveMap from '../components/InteractiveMap';
+import ManusApp from '../components/ManusApp';
 
-// EMERGENCY: Vercel Cache Problem - Force Complete Rebuild v3.0
+// 🎯 MANUS APP - Complete 1:1 Replica v4.0
 export default function Home() {
-  console.log('🚀 MANUS INTERACTIVE MAP - Version 3.0 - Forced Rebuild');
-  return (
-    <div>
-      <InteractiveMap />
-    </div>
-  );
+  console.log('🎯 MANUS APP REPLICA - Version 4.0 - Complete Nachbau');
+  return <ManusApp />;
 }
