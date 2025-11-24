@@ -8,8 +8,8 @@ import { Stakeholder } from '@/lib/supabase';
 
 interface MapViewProps {
   stakeholders: Stakeholder[];
-  selectedStakeholder: Stakeholder | null;
-  onSelectStakeholder: (stakeholder: Stakeholder) => void;
+  selectedId: string | null;
+  setSelectedId: (id: string | null) => void;
 }
 
 // Niedersachsen Zentrum
@@ -23,8 +23,8 @@ const INITIAL_VIEW_STATE = {
 
 export function MapView({ 
   stakeholders, 
-  selectedStakeholder,
-  onSelectStakeholder 
+  selectedId,
+  setSelectedId 
 }: MapViewProps) {
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [cursor, setCursor] = useState<string>('default');
@@ -36,17 +36,17 @@ export function MapView({
       <StakeholderMarker
         key={stakeholder.id}
         stakeholder={stakeholder}
-        onClick={() => onSelectStakeholder(stakeholder)}
+        onClick={() => setSelectedId(stakeholder.id)}
       />
     ));
-  }, [stakeholders, onSelectStakeholder]);
+  }, [stakeholders, setSelectedId]);
 
   const onMapClick = useCallback(() => {
     // Deselektiere bei Klick auf Karte
-    if (selectedStakeholder) {
-      onSelectStakeholder(null as any);
+    if (selectedId) {
+      setSelectedId(null);
     }
-  }, [selectedStakeholder, onSelectStakeholder]);
+  }, [selectedId, setSelectedId]);
 
   if (!mapboxToken) {
     return (

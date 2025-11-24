@@ -10,10 +10,13 @@ interface StakeholderMarkerProps {
 }
 
 export function StakeholderMarker({ stakeholder, onClick }: StakeholderMarkerProps) {
-  // Primäre Farbe basierend auf dem ersten Bereich
-  const primaryColor = areaColors[stakeholder.areas[0]] || '#3B82F6';
+  // Primäre Farbe basierend auf dem ersten Bereich (falls verfügbar)
+  const primaryColor = stakeholder.areas && stakeholder.areas[0] ? 
+    areaColors[stakeholder.areas[0]] : '#3B82F6';
   
-  const [longitude, latitude] = stakeholder.location.coordinates;
+  // Use latitude/longitude from stakeholder object
+  const longitude = stakeholder.longitude || (stakeholder.location?.coordinates?.[0]);
+  const latitude = stakeholder.latitude || (stakeholder.location?.coordinates?.[1]);
   
   return (
     <Marker

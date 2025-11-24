@@ -3,7 +3,8 @@ import { Filters, Stakeholder } from '@/lib/supabase';
 
 export async function fetchStakeholders(filters: Filters): Promise<Stakeholder[]> {
   let query = supabase
-.from('stakeholders')    .select('*')
+    .from('stakeholders')
+    .select('*')
     .order('name');
 
   // Text-Suche
@@ -56,8 +57,8 @@ export async function fetchStakeholders(filters: Filters): Promise<Stakeholder[]
       type: 'Point' as const,
       coordinates: [parseFloat(item.longitude ?? 0), parseFloat(item.latitude ?? 0)] as [number, number],
     },
-        latitude: parseFloat(item.latitude ?? 0),
-        longitude: parseFloat(item.longitude ?? 0),
+    latitude: parseFloat(item.latitude ?? 0),
+    longitude: parseFloat(item.longitude ?? 0),
     status: (item.status ?? 'unbekannt') as Stakeholder['status'],
     last_checked_at: item.last_checked_at,
     check_source: item.check_source,
@@ -73,7 +74,7 @@ export async function fetchStakeholders(filters: Filters): Promise<Stakeholder[]
 
 export async function fetchStakeholderById(id: string): Promise<Stakeholder | null> {
   const { data, error } = await supabase
-    .from('')
+    .from('stakeholders')
     .select('*')
     .eq('id', id)
     .single();
