@@ -1,9 +1,9 @@
 'use client';
 
-import ManusApp from '../components/ManusApp';
+import Home from '../components/Home';
 
-// 🎯 MANUS APP - Complete 1:1 Replica v4.0
-export default function Home() {
-  console.log('🎯 MANUS APP REPLICA - Version 4.0 - Complete Nachbau');
-  return <ManusApp />;
+// 🎯 REAL MANUS CODEBASE - 1:1 Replica with Leaflet v5.0
+export default function HomePage() {
+  console.log('🎯 REAL MANUS CODEBASE - Version 5.0 - Leaflet + OpenStreetMap');
+  return <Home />;
 }
