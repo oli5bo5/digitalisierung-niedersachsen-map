@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { X } from "lucide-react";
 
 interface Actor {
@@ -34,7 +34,7 @@ export default function ActorSearch({ actors, onFilterChange }: ActorSearchProps
   const [selectedType, setSelectedType] = useState<string>("all");
 
   const filteredActors = useMemo(() => {
-    const filtered = actors.filter((actor) => {
+    return actors.filter((actor) => {
       const matchesSearch =
         actor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (actor.city && actor.city.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -45,11 +45,12 @@ export default function ActorSearch({ actors, onFilterChange }: ActorSearchProps
 
       return matchesSearch && matchesType;
     });
+  }, [actors, searchTerm, selectedType]);
 
-    // Notify parent of filtered results
-    onFilterChange(filtered);
-    return filtered;
-  }, [actors, searchTerm, selectedType, onFilterChange]);
+  // Notify parent of filtered results in separate useEffect
+  useEffect(() => {
+    onFilterChange(filteredActors);
+  }, [filteredActors, onFilterChange]);
 
   const handleClearFilters = () => {
     setSearchTerm("");
@@ -100,3 +101,4 @@ export default function ActorSearch({ actors, onFilterChange }: ActorSearchProps
     </div>
   );
 }
+

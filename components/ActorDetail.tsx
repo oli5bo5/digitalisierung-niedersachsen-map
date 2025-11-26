@@ -143,3 +143,5 @@ export default function ActorDetail({ actor, onClose }: ActorDetailProps) {
     </div>
   );
 }
+
+
